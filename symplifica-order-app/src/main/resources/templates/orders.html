@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Products</title>
+
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        .rounded-container {
+            border-radius: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .btn-custom {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="container my-5">
+    <br>
+    <h1>Orders</h1>
+    <div class="rounded-container">
+        <div class="row">
+            <div class="col-12 col-md-5 border border-2 p-4 rounded-5 mw-25">
+                <ul class="list-unstyled">
+                    <li th:each="product : ${leftProducts}">
+                        <span th:text="${product.name}"></span> <input type="checkbox" th:value="${product.id}" id="Left${product.id}" name="productIds" form="addProductForm">
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-12 col-md-2 d-flex flex-column justify-content-center">
+
+                <form id="addProductForm" method="post" action="/orders/toggleCheck">
+                    <input type="text" value="add" hidden name="actionType">
+                    <button type="submit" class="btn btn-primary my-2 btn-custom">Add Product(s) →</button>
+                </form>
+                <form id="removeProductForm" method="post" action="/orders/toggleCheck">
+                    <input type="text" value="remove" hidden name="actionType">
+                    <button type="submit" class="btn btn-secondary my-2 btn-custom">← Remove Product(s)</button>
+                </form>
+            </div>
+
+            <div class="col-12 col-md-5 border border-2 p-4 rounded-5 mw-25">
+                <ul class="list-unstyled">
+                    <li th:each="product : ${rightProducts}">
+                        <span th:text="${product.name}"></span> <input type="checkbox" id="Right${product.id}" name="productIds" th:value="${product.id}" form="removeProductForm">
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="row my-4">
+            <div class="col-md-12 text-center">
+                <form method="post" action="/orders/save">
+                    <button class="btn btn-dark btn-lg" type="submit">Generate Order</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-bordered">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>Order No</th>
+                        <th>Product Name</th>
+                        <th>Product Price</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="order : ${orders}">
+                        <td th:text="${order.id}"></td>
+                        <td th:text="${order.product.name}"></td>
+                        <td th:text="${order.product.price}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:if="${messageSuccess}">
+    <script th:inline="javascript">
+        Swal.fire({
+            title: '¡Success!',
+            text: [[${messageSuccess}]],
+            icon: 'success',
+            confirmButtonText: 'Accept'
+        });
+    </script>
+</div>
+<div th:if="${messageError}">
+    <script th:inline="javascript">
+        Swal.fire({
+            title: '¡Error!',
+            text: [[${messageError}]],
+            icon: 'error',
+            confirmButtonText: 'Accept'
+        });
+    </script>
+</div>
+<div th:if="${messageWarning}">
+    <script th:inline="javascript">
+        Swal.fire({
+            title: '¡Warning!',
+            text: [[${messageWarning}]],
+            icon: 'warning',
+            confirmButtonText: 'Accept'
+        });
+    </script>
+</div>
+</body>
+</html>
